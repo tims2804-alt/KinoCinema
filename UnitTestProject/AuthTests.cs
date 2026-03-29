@@ -1,6 +1,7 @@
 ﻿using KinoCinema.Pages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 [TestClass]
 public class AuthTests
 {
@@ -9,7 +10,7 @@ public class AuthTests
     {
         var page = new LoginPage();
         // Укажите логин и пароль, которые ТОЧНО есть в вашей БД
-        bool result = page.Auth("admin", "admin");
+        bool result = page.Auth("123", "123");
         Assert.IsTrue(result);
     }
 

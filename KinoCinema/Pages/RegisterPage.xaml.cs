@@ -38,7 +38,13 @@ namespace KinoCinema.Pages
 
                     return cmd.ExecuteNonQuery() > 0;
                 }
-                catch { return false; }
+                catch (Exception ex)
+                {
+                    // Временно выводим ошибку в консоль теста, чтобы увидеть её в Stack Trace
+                    Console.WriteLine("Ошибка БД: " + ex.Message);
+                    return false;
+                }
+
             }
         }
 

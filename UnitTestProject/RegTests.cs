@@ -10,7 +10,7 @@ public class RegTests
     {
         var page = new RegisterPage();
         string uniqueLogin = "User" + DateTime.Now.Ticks; // Чтобы логин не повторялся
-        bool result = page.RegisterUser(uniqueLogin, "qwerty", "qwerty");
+        bool result = page.RegisterUser(uniqueLogin, "12345", "12345");
         Assert.IsTrue(result);
     }
 
