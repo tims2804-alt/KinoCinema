@@ -26,33 +26,51 @@ namespace KinoCinema.Pages
             InitializeComponent();
         }
 
-        private void Login_Click(object sender, RoutedEventArgs e)
+        // Внутри класса LoginPage
+        public bool Auth(string login, string password)
         {
+            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+            {
+                return false; // Тест не пройдет, если поля пустые
+            }
+
             using (SqlConnection conn = new SqlConnection(DbConfig.ConnectionString))
             {
                 try
                 {
                     conn.Open();
-                    string sql = "SELECT Id, FullName FROM Users WHERE Login = @login AND Password = @pass";
-                    // Используем конкретное указание типа SqlDbType.NVarChar
                     SqlCommand cmd = new SqlCommand("SELECT Id, FullName FROM Users WHERE Login = @login AND Password = @pass", conn);
-                    cmd.Parameters.Add("@login", System.Data.SqlDbType.NVarChar, 50).Value = LoginField.Text.Trim();
-                    cmd.Parameters.Add("@pass", System.Data.SqlDbType.NVarChar, 255).Value = PasswordField.Password.Trim();
+                    cmd.Parameters.Add("@login", System.Data.SqlDbType.NVarChar, 50).Value = login.Trim();
+                    cmd.Parameters.Add("@pass", System.Data.SqlDbType.NVarChar, 255).Value = password.Trim();
 
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
                         DbConfig.CurrentUserId = (int)reader["Id"];
                         DbConfig.CurrentUserFullName = reader["FullName"].ToString();
-                        MessageBox.Show($"Добро пожаловать, {DbConfig.CurrentUserFullName}!");
-                        NavigationService.Navigate(new MainPage());
-                    }
-                    else
-                    {
-                        MessageBox.Show("Неверный логин или пароль!");
+                        return true;
                     }
                 }
-                catch (Exception ex) { MessageBox.Show("Ошибка БД: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ошибка БД: " + ex.Message);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Измененный обработчик кнопки
+        private void Login_Click(object sender, RoutedEventArgs e)
+        {
+            if (Auth(LoginField.Text, PasswordField.Password))
+            {
+                MessageBox.Show($"Добро пожаловать, {DbConfig.CurrentUserFullName}!");
+                NavigationService.Navigate(new MainPage());
+            }
+            else
+            {
+                MessageBox.Show("Неверный логин или пароль!");
             }
         }
 
